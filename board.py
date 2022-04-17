@@ -50,7 +50,7 @@ class Board:
     def get_step_count(self):
         return self._current_step
 
-    def get_path(self):
+    def get_paths(self):
         return self._path_log
 
     def show_path(self):
@@ -58,7 +58,7 @@ class Board:
 
     def move(self, target_pos:dict):
         target_tile = self.get_tile(target_pos['x'], target_pos['y'])
-        if (self.check_legel_move(self._current_pos, target_pos) is True and target_tile.get_status() == False):
+        if (self.check_legel_move(self._current_pos, target_pos) is True and target_tile.is_visited() == False):
             target_tile.set_status(True)
             target_tile.set_step(self._current_step + 1)
 
@@ -79,38 +79,38 @@ class Board:
             if(current_pos['y'] + 1 < board_edge):
                 # tile that already moved not count as legel
                 target_tile = self.get_tile(current_pos['x'] + 2, current_pos['y'] + 1)
-                if(target_tile.get_status() is False):
+                if(target_tile.is_visited() is False):
                     legel_moves.append([current_pos['x'] + 2, current_pos['y'] + 1])
             if(current_pos['y'] - 1 > -1):
                 target_tile = self.get_tile(current_pos['x'] + 2, current_pos['y'] - 1)
-                if(target_tile.get_status() is False):
+                if(target_tile.is_visited() is False):
                     legel_moves.append([current_pos['x'] + 2, current_pos['y'] - 1])
         if (current_pos['x'] - 2 > -1):
             if(current_pos['y'] + 1 < board_edge):
                 target_tile = self.get_tile(current_pos['x'] - 2, current_pos['y'] + 1)
-                if(target_tile.get_status() is False):
+                if(target_tile.is_visited() is False):
                     legel_moves.append([current_pos['x'] - 2, current_pos['y'] + 1])
             if(current_pos['y'] - 1 > -1):
                 target_tile = self.get_tile(current_pos['x'] - 2, current_pos['y'] - 1)
-                if(target_tile.get_status() is False):
+                if(target_tile.is_visited() is False):
                     legel_moves.append([current_pos['x'] - 2, current_pos['y'] - 1])
         if (current_pos['y'] + 2 < board_edge):
             if(current_pos['x'] + 1 < board_edge):
                 target_tile = self.get_tile(current_pos['x'] + 1, current_pos['y'] + 2)
-                if(target_tile.get_status() is False):
+                if(target_tile.is_visited() is False):
                     legel_moves.append([current_pos['x'] + 1, current_pos['y'] + 2])
             if(current_pos['x'] - 1 > -1):
                 target_tile = self.get_tile(current_pos['x'] - 1, current_pos['y'] + 2)
-                if(target_tile.get_status() is False):
+                if(target_tile.is_visited() is False):
                     legel_moves.append([current_pos['x'] - 1, current_pos['y'] + 2])
         if (current_pos['y'] - 2 > -1):
             if(current_pos['x'] + 1 < board_edge):
                 target_tile = self.get_tile(current_pos['x'] + 1, current_pos['y'] - 2)
-                if(target_tile.get_status() is False):
+                if(target_tile.is_visited() is False):
                     legel_moves.append([current_pos['x'] + 1, current_pos['y'] - 2])
             if(current_pos['x'] - 1 > -1):
                 target_tile = self.get_tile(current_pos['x'] - 1, current_pos['y'] - 2)
-                if(target_tile.get_status() is False):
+                if(target_tile.is_visited() is False):
                     legel_moves.append([current_pos['x'] - 1, current_pos['y'] - 2])
         
         if len(legel_moves) == 0:
