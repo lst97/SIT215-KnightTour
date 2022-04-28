@@ -15,7 +15,7 @@ class Board:
 
         pass
 
-    def __init__(self, size: tuple, start_pos={"x": 0, "y": 0}) -> None:
+    def __init__(self, size: tuple, start_pos: dict = {"x": 0, "y": 0}) -> None:
         if size[0] != size[1]:
             raise Exception("Not a Square Board")
 
@@ -24,16 +24,25 @@ class Board:
         self._current_pos = start_pos
         self._current_step = 1
         self._path_log = []
-        self.get_tile(start_pos["x"], start_pos["y"]).set_status(True)
+        self.get_tile(start_pos["x"], start_pos["y"]).set_state(True)
         self._path_log.append([start_pos["y"], start_pos["x"]])
 
-    def get_tiles(self):
+    def get_tiles(self) -> Tile:
         return self._tiles
 
-    def get_tile(self, x, y):
+    def get_tile(self, x: int, y: int):
         return self.get_tiles()[x][y]
 
-    def get_mouse_tile_pos(self, pos: tuple, screen_size: list):
+    def get_mouse_tile_pos(self, pos: tuple, screen_size: list) -> tuple:
+        """For mouse debug, get current tile relative to the mouse cursor.
+
+        Args:
+            pos (tuple): mouse posistion
+            screen_size (list): screen size
+
+        Returns:
+            tuple: coresponding tile position
+        """
         tile_pos_x = tile_pos_y = 0
         offset = int(screen_size[0] / self.get_size())
 
@@ -52,22 +61,30 @@ class Board:
 
         return tile_pos_x, tile_pos_y
 
-    def get_step_count(self):
+    def get_step_count(self) -> int:
         return self._current_step
 
-    def get_paths(self):
+    def get_paths(self) -> list:
         return self._path_log
 
-    def show_path(self):
+    def show_path(self) -> None:
         print(self._path_log)
 
-    def move(self, target_pos: dict):
+    def move(self, target_pos: dict) -> bool:
+        """Knight move from current posistion to target posisiton
+
+        Args:
+            target_pos (dict): target posistion
+
+        Returns:
+            bool: True if valid move. else False
+        """
         target_tile = self.get_tile(target_pos["x"], target_pos["y"])
         if (
             self.check_legel_move(self._current_pos, target_pos) is True
             and target_tile.is_visited() == False
         ):
-            target_tile.set_status(True)
+            target_tile.set_state(True)
             target_tile.set_step(self._current_step + 1)
 
             self._current_step += 1
@@ -77,7 +94,7 @@ class Board:
             return True
         return False
 
-    def check_legel_move(self, current_pos: dict, target_pos: dict):
+    def check_legel_move(self, current_pos: dict, target_pos: dict) -> bool:
         legel_moves = []
         board_edge = self.get_size()
 
@@ -122,13 +139,14 @@ class Board:
                     legel_moves.append([current_pos["x"] - 1, current_pos["y"] - 2])
 
         if len(legel_moves) == 0 and self._current_step < pow(self.get_size(), 2):
-            raise Board.NoSloveException("No Legel Move!")
+            raise Board.NoSloveException("No Any Legel Move!")
 
         target_move = []
         for _, i in target_pos.items():
             target_move.append(i)
 
         is_legel = False
+        # Knight must move, cant stay
         for move in legel_moves:
             if move == target_move:
                 is_legel = True
@@ -136,16 +154,21 @@ class Board:
 
         return is_legel
 
-    def get_size(self):
+    def get_size(self) -> int:
         return self._size[0]
 
-    def get_current_pos(self):
+    def get_current_pos(self) -> dict:
         return self._current_pos
 
-    def set_current_pos(self, pos):
+    def set_current_pos(self, pos: dict):
         self._current_pos = pos
 
-    def make_tiles(self):
+    def make_tiles(self) -> list:
+        """Make tile objects for board data
+
+        Returns:
+            list: list of Tile objects.
+        """
         tiles = list()
 
         for y in range(self._size[0]):
