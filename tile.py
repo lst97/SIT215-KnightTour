@@ -1,31 +1,34 @@
+ACTIVATED_COLOR = (128, 128, 128)  # gray
 
-ACTIVATED_COLOR = (128, 128, 128)
+
 class Tile:
-    def __init__(self, pos:dict, color:tuple) -> None:
+    def __init__(self, pos: dict, color: tuple) -> None:
         self._pos = pos
-        self._is_activated = False
+        self._visited = False
         self._color = color
         self._step = 1
-    
-    def set_step(self, step:int):
+
+    def set_step(self, step: int):
         self._step = step
-    
-    def get_step(self):
+
+    def get_step(self) -> int:
+        """step count
+
+        Returns:
+            int: step count
+        """
         return self._step
 
-    def get_step(self):
-        return self._step
-
-    def get_color(self):
+    def get_color(self) -> tuple:
         return self._color
-        
-    def set_color(self, color:tuple):
+
+    def set_color(self, color: tuple):
         self._color = color
 
-    def set_status(self, status):
-        self._is_activated = status
-        if(self._is_activated is True):
+    def set_state(self, status: bool) -> None:
+        self._visited = status
+        if self._visited is True:
             self._color = ACTIVATED_COLOR
 
-    def get_status(self) -> bool:
-        return self._is_activated
+    def is_visited(self) -> bool:
+        return self._visited
