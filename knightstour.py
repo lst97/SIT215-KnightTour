@@ -69,9 +69,9 @@ class KnightsTour:
                     solutions = self._slove(self._algo)
                     if len(solutions) != 0:
                         print("{} solution(s) found!".format(len(solutions)))
+                        print(solutions)
                         # play moves
                         self._gui.draw_paths(self._board, solutions)
-                        print(solutions)
                     else:
                         print("No Solution!")
                     running = False
