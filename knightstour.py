@@ -2,7 +2,7 @@
 from board import Board
 import pygame
 from gui import GUI
-from algorithm import Algorithm
+from algorithm import KTAlgorithm
 
 WINDOWS_SIZE = [500, 500]
 DEBUG_MODE = False
@@ -15,8 +15,15 @@ class KnightsTour:
         self._algo = algo_approach
         self.start()
 
-    def _curser_debug(self, event):
-        # True = Keep Running
+    def _curser_debug(self, event:pygame.event) -> bool:
+        """Reutnr if the GUI continue to run or not
+
+        Args:
+            event (pygame.event): pygame event
+
+        Returns:
+            bool: True to keep running, else False
+        """
         if(self._board.get_step_count() == pow(self._board.get_size(), 2)):
             self._gui.set_caption('Congratulation, You Solved The Problem!')
             print("Congratulation, You Solved The Problem!\nPath:")
@@ -42,14 +49,24 @@ class KnightsTour:
         
         return True
     
-    def _slove(self, algo):
-        approach = Algorithm(self._board, algo)
+    def _slove(self, algo) -> list:
+        """Driver function
+
+        Args:
+            algo (Any): Either BT, ANN or Warnsdorff
+
+        Returns:
+            list: solution paths
+        """
+        approach = KTAlgorithm(self._board, algo)
         try:
             return approach.get_result()
-        except Algorithm.NoSolutionException:
+        except KTAlgorithm.NoSolutionException:
             return list()
 
     def start(self):
+        """Start the GUI for KT visulization
+        """
         pygame.init()
         self._gui.set_caption('SIT-215 PBL2 KnightsTour [Group-6]')
 
@@ -77,5 +94,6 @@ class KnightsTour:
                     running = False
                     break
                 self._gui.refresh()
+        input("Press any key to exit.")
         pygame.quit()
         
