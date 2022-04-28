@@ -25,7 +25,7 @@ class Board:
         self._current_step = 1
         self._path_log = []
         self.get_tile(start_pos["x"], start_pos["y"]).set_status(True)
-        self._path_log.append([start_pos["x"], start_pos["y"]])
+        self._path_log.append([start_pos["y"], start_pos["x"]])
 
     def get_tiles(self):
         return self._tiles
@@ -82,7 +82,7 @@ class Board:
         board_edge = self.get_size()
 
         # find legel pos for current_pos
-        # can be optimzied?
+        # can be optimzied? if it works, just dont touch it for now [lst97]
         if current_pos["x"] + 2 < board_edge:
             if current_pos["y"] + 1 < board_edge:
                 # tile that already moved not count as legel
@@ -121,7 +121,7 @@ class Board:
                 if target_tile.is_visited() is False:
                     legel_moves.append([current_pos["x"] - 1, current_pos["y"] - 2])
 
-        if (len(legel_moves) == 0 and self._current_step < pow(self.get_size(), 2)):
+        if len(legel_moves) == 0 and self._current_step < pow(self.get_size(), 2):
             raise Board.NoSloveException("No Legel Move!")
 
         target_move = []
