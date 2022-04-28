@@ -64,10 +64,10 @@ class KTAlgorithm:
         """Find one solution using Backtracking Algorithm"""
 
         # Backtracking Algorithm
-        def __init__(self, board_size: int, sloved_pool=[]) -> None:
+        def __init__(self, board_size: int, solved_pool=[]) -> None:
             print("Searching for solution using BackTracking Algorithm...")
 
-            self._sloved_pool = sloved_pool  # for different results, only one for now
+            self._solved_pool = solved_pool  # for different results, only one for now
             self._board_size = board_size
             self._board = []
 
@@ -83,7 +83,7 @@ class KTAlgorithm:
             for i in range(len(POSSIBLE_X)):
                 if counter >= pow(self._board_size, 2) + 1:
                     # solution found
-                    self._sloved_pool.append([])
+                    self._solved_pool.append([])
                     return True
 
                 new_x = col + POSSIBLE_X[i]
@@ -91,7 +91,7 @@ class KTAlgorithm:
                 if KTAlgorithm._validate_move(self._board, new_x, new_y):
                     self._board[new_y][new_x] = counter
                     if self.solve(new_x, new_y, counter + 1):
-                        self._sloved_pool[len(self._sloved_pool) - 1].append(
+                        self._solved_pool[len(self._solved_pool) - 1].append(
                             # add path in reversed order due to recursion.
                             [new_x, new_y]
                         )
@@ -102,11 +102,11 @@ class KTAlgorithm:
 
     class Warnsdorff:
         # Warnsdorff's Algorithm
-        def __init__(self, board_size: int, sloved_pool: list = []) -> None:
+        def __init__(self, board_size: int, solved_pool: list = []) -> None:
             print("Searching for solution using Warnsdorff's Algorithm...")
 
             self._board_size = board_size
-            self._sloved_pool = sloved_pool
+            self._solved_pool = solved_pool
             self._solution_moves = []
             self._next_step = 0
             self._rand = rnd
@@ -132,7 +132,7 @@ class KTAlgorithm:
             # if self._solution_moves[-1] == self._solution_moves[0]:
             #     self._solution_moves.pop()
 
-            self._sloved_pool.append(self._solution_moves)
+            self._solved_pool.append(self._solution_moves)
             return True
 
         def _is_empty(self, col: int, row: int) -> bool:
@@ -192,7 +192,7 @@ class KTAlgorithm:
                 self.outputs = np.array([])
                 self.states = np.array([])
 
-        def __init__(self, board_size: int, sloved_pool: list = []) -> None:
+        def __init__(self, board_size: int, solved_pool: list = []) -> None:
             print("Searching for solution using Artificial Neural Networks...")
             self._neuron = self.Neuron()
             self._board_size = board_size  # square board
@@ -204,7 +204,7 @@ class KTAlgorithm:
                     temp.append(set())
                 self._board.append(temp)
 
-            self._sloved_pool = sloved_pool
+            self._solved_pool = solved_pool
             self.allow_invalid = False  # for assessment
 
             """
@@ -282,10 +282,10 @@ class KTAlgorithm:
                     print("Possible solution found (degree=2)...", end="")
                     solution = self._get_solution(row, col)
                     if self.allow_invalid is True:
-                        self._sloved_pool.append(solution)
+                        self._solved_pool.append(solution)
                     if self._check_connected_components():
                         print("Valid!")
-                        self._sloved_pool.append(self._get_solution(row, col))
+                        self._solved_pool.append(self._get_solution(row, col))
                         break
                     else:
                         print("Droped!")
@@ -454,14 +454,14 @@ class KTAlgorithm:
         path_log = []
         path_log.append(self._paths[:])
         self._algo.solve(self._paths[0][1], self._paths[0][0], 1)
-        if len(self._algo._sloved_pool) != 0:
+        if len(self._algo._solved_pool) != 0:
             if isinstance(self._algo, self.BT):
-                self._algo._sloved_pool[0].append(
+                self._algo._solved_pool[0].append(
                     [self._paths[0][1], self._paths[0][0]]
                 )  # change the index if multiple reuslt accure
-                self._algo._sloved_pool[0] = self._algo._sloved_pool[0][
+                self._algo._solved_pool[0] = self._algo._solved_pool[0][
                     ::-1
                 ]  # reverse order due to recursion.
         else:
             raise self.NoSolutionException()
-        return self._algo._sloved_pool
+        return self._algo._solved_pool
