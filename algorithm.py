@@ -95,6 +95,10 @@ class KTAlgorithm:
                             # add path in reversed order due to recursion.
                             [new_x, new_y]
                         )
+                        if counter == 2:
+                            self._solved_pool[0].append([row, col])
+                            # reverse order due to recursion.
+                            self._solved_pool[0] = self._solved_pool[0][::-1]
                         return True
 
                     self._board[new_y][new_x] = 0
@@ -458,14 +462,24 @@ class KTAlgorithm:
         path_log = []
         path_log.append(self._paths[:])
         self._algo.solve(self._paths[0][1], self._paths[0][0], 1)
-        if len(self._algo._solved_pool) != 0:
-            if isinstance(self._algo, self.BT):
-                self._algo._solved_pool[0].append(
-                    [self._paths[0][1], self._paths[0][0]]
-                )  # change the index if multiple reuslt accure
-                self._algo._solved_pool[0] = self._algo._solved_pool[0][
-                    ::-1
-                ]  # reverse order due to recursion.
-        else:
+
+        if len(self._algo._solved_pool) == 0:
             raise self.NoSolutionException()
+
         return self._algo._solved_pool
+
+
+# # ANN
+# algo = KTAlgorithm.ANN(6)
+# algo.solve(0, 0, 1)
+# print(algo._solved_pool)
+
+# # BT
+# algo = KTAlgorithm.BT(6)
+# algo.solve(0, 0, 1)
+# print(algo._solved_pool)
+
+# # Warnsdorff
+# algo = KTAlgorithm.Warnsdorff(6)
+# algo.solve(0, 0, 1)
+# print(algo._solved_pool)
