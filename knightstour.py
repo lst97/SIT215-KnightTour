@@ -1,4 +1,3 @@
-
 from board import Board
 import pygame
 from gui import GUI
@@ -40,8 +39,8 @@ class KnightsTour:
                     self._gui.draw_board()
                     self._gui.draw_path(self._board.get_paths(), target_pos, self._board.get_size())
 
-                    # check current tile see if any legel move avaliable.
-                    self._board.check_legel_move(target_pos, target_pos)
+                    # check current tile see if any legal move avaliable.
+                    self._board.check_legal_move(target_pos, target_pos)
             except Board.NoSloveException:
                 print("Unfortunally, Those Moves Cant Solved The Problem!\nPath:")
                 self._board.show_path()
