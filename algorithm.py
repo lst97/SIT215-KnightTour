@@ -107,24 +107,29 @@ class KTAlgorithm:
 
             self._board_size = board_size
             self._solved_pool = solved_pool
-            self._solution_moves = []
-            self._next_step = 0
             self._rand = rnd
 
             self._board = KTAlgorithm._init_board(self._board_size)
 
         def solve(self, col: int, row: int, counter: int) -> bool:
             # first move
-            self._next_step += counter
-            self._solution_moves.append([row, col])
-            self._board[row][col] = self._next_step
-            self._next_step += 1
+            solution_moves = []
+            solution_moves.append([row, col])
+
+            step_count = 0
+            step_count += counter
+            self._board[row][col] = step_count
+            step_count += 1
 
             for i in range(pow(self._board_size, 2)):
                 step_count = self._next_move(
-                    {"x": self._solution_moves[i][1], "y": self._solution_moves[i][0]}
+                    {"x": solution_moves[i][1], "y": solution_moves[i][0]},
+                    solution_moves,
+                    step_count,
                 )
-                if step_count is None and self._next_step <= pow(self._board_size, 2):
+                if step_count is None and len(solution_moves) < pow(
+                    self._board_size, 2
+                ):
                     return False
 
             # I did not test this, uncomment if InvalidMove exception accure. [lst97]
@@ -132,7 +137,7 @@ class KTAlgorithm:
             # if self._solution_moves[-1] == self._solution_moves[0]:
             #     self._solution_moves.pop()
 
-            self._solved_pool.append(self._solution_moves)
+            self._solved_pool.append(solution_moves)
             return True
 
         def _is_empty(self, col: int, row: int) -> bool:
@@ -148,7 +153,7 @@ class KTAlgorithm:
             return count
 
         # Warnsdorff's heuristic
-        def _next_move(self, pos: dict) -> int:
+        def _next_move(self, pos: dict, solution_moves: list, step_count: int) -> int:
             possible_move = len(POSSIBLE_X)
             degree_count = None
             min_deg_index = -1
@@ -176,10 +181,9 @@ class KTAlgorithm:
             next_x = pos["x"] + POSSIBLE_X[min_deg_index]
             next_y = pos["y"] + POSSIBLE_Y[min_deg_index]
 
-            self._solution_moves.append([next_y, next_x])
-            self._board[next_x][next_y] = self._next_step
-            self._next_step += 1
-            return len(self._solution_moves)
+            solution_moves.append([next_y, next_x])
+            self._board[next_x][next_y] = step_count
+            return len(solution_moves) + 1
 
     class ANN:
         # Artificial Neural Networks
