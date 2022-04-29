@@ -30,7 +30,7 @@ class Board:
     def get_tiles(self) -> Tile:
         return self._tiles
 
-    def get_tile(self, x: int, y: int):
+    def get_tile(self, x: int, y: int) -> Tile:
         return self.get_tiles()[x][y]
 
     def get_mouse_tile_pos(self, pos: tuple, screen_size: list) -> tuple:
@@ -81,7 +81,7 @@ class Board:
         """
         target_tile = self.get_tile(target_pos["x"], target_pos["y"])
         if (
-            self.check_legel_move(self._current_pos, target_pos) is True
+            self.check_legal_move(self._current_pos, target_pos) is True
             and target_tile.is_visited() == False
         ):
             target_tile.set_state(True)
@@ -94,65 +94,65 @@ class Board:
             return True
         return False
 
-    def check_legel_move(self, current_pos: dict, target_pos: dict) -> bool:
-        legel_moves = []
+    def check_legal_move(self, current_pos: dict, target_pos: dict) -> bool:
+        legal_moves = []
         board_edge = self.get_size()
 
-        # find legel pos for current_pos
+        # find legal pos for current_pos
         # can be optimzied? if it works, just dont touch it for now [lst97]
         if current_pos["x"] + 2 < board_edge:
             if current_pos["y"] + 1 < board_edge:
-                # tile that already moved not count as legel
+                # tile that already moved not count as legal
                 target_tile = self.get_tile(current_pos["x"] + 2, current_pos["y"] + 1)
                 if target_tile.is_visited() is False:
-                    legel_moves.append([current_pos["x"] + 2, current_pos["y"] + 1])
+                    legal_moves.append([current_pos["x"] + 2, current_pos["y"] + 1])
             if current_pos["y"] - 1 > -1:
                 target_tile = self.get_tile(current_pos["x"] + 2, current_pos["y"] - 1)
                 if target_tile.is_visited() is False:
-                    legel_moves.append([current_pos["x"] + 2, current_pos["y"] - 1])
+                    legal_moves.append([current_pos["x"] + 2, current_pos["y"] - 1])
         if current_pos["x"] - 2 > -1:
             if current_pos["y"] + 1 < board_edge:
                 target_tile = self.get_tile(current_pos["x"] - 2, current_pos["y"] + 1)
                 if target_tile.is_visited() is False:
-                    legel_moves.append([current_pos["x"] - 2, current_pos["y"] + 1])
+                    legal_moves.append([current_pos["x"] - 2, current_pos["y"] + 1])
             if current_pos["y"] - 1 > -1:
                 target_tile = self.get_tile(current_pos["x"] - 2, current_pos["y"] - 1)
                 if target_tile.is_visited() is False:
-                    legel_moves.append([current_pos["x"] - 2, current_pos["y"] - 1])
+                    legal_moves.append([current_pos["x"] - 2, current_pos["y"] - 1])
         if current_pos["y"] + 2 < board_edge:
             if current_pos["x"] + 1 < board_edge:
                 target_tile = self.get_tile(current_pos["x"] + 1, current_pos["y"] + 2)
                 if target_tile.is_visited() is False:
-                    legel_moves.append([current_pos["x"] + 1, current_pos["y"] + 2])
+                    legal_moves.append([current_pos["x"] + 1, current_pos["y"] + 2])
             if current_pos["x"] - 1 > -1:
                 target_tile = self.get_tile(current_pos["x"] - 1, current_pos["y"] + 2)
                 if target_tile.is_visited() is False:
-                    legel_moves.append([current_pos["x"] - 1, current_pos["y"] + 2])
+                    legal_moves.append([current_pos["x"] - 1, current_pos["y"] + 2])
         if current_pos["y"] - 2 > -1:
             if current_pos["x"] + 1 < board_edge:
                 target_tile = self.get_tile(current_pos["x"] + 1, current_pos["y"] - 2)
                 if target_tile.is_visited() is False:
-                    legel_moves.append([current_pos["x"] + 1, current_pos["y"] - 2])
+                    legal_moves.append([current_pos["x"] + 1, current_pos["y"] - 2])
             if current_pos["x"] - 1 > -1:
                 target_tile = self.get_tile(current_pos["x"] - 1, current_pos["y"] - 2)
                 if target_tile.is_visited() is False:
-                    legel_moves.append([current_pos["x"] - 1, current_pos["y"] - 2])
+                    legal_moves.append([current_pos["x"] - 1, current_pos["y"] - 2])
 
-        if len(legel_moves) == 0 and self._current_step < pow(self.get_size(), 2):
+        if len(legal_moves) == 0 and self._current_step < pow(self.get_size(), 2):
             raise Board.NoSloveException("No Any Legel Move!")
 
         target_move = []
         for _, i in target_pos.items():
             target_move.append(i)
 
-        is_legel = False
+        is_legal = False
         # Knight must move, cant stay
-        for move in legel_moves:
+        for move in legal_moves:
             if move == target_move:
-                is_legel = True
+                is_legal = True
                 break
 
-        return is_legel
+        return is_legal
 
     def get_size(self) -> int:
         return self._size[0]
@@ -160,7 +160,7 @@ class Board:
     def get_current_pos(self) -> dict:
         return self._current_pos
 
-    def set_current_pos(self, pos: dict):
+    def set_current_pos(self, pos: dict) -> None:
         self._current_pos = pos
 
     def make_tiles(self) -> list:
