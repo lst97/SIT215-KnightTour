@@ -288,10 +288,12 @@ class KTAlgorithm:
 
                 if is_degree_two:
                     print("Possible solution found (degree=2)...", end="")
+
                     solution = self._get_solution(row, col)
                     if self.allow_invalid is True:
                         self._solved_pool.append(solution)
-                    if self._check_connected_components():
+
+                    if solution is not None:
                         print("Valid!")
                         self._solved_pool.append(self._get_solution(row, col))
                         break
@@ -309,7 +311,6 @@ class KTAlgorithm:
                 2, size=(len(self._neuron.vertices)), dtype=np.int16
             )
             self._neuron.states = np.zeros((len(self._neuron.vertices)), dtype=np.int16)
-            pass
 
         def _check_degree(self):
             # gets the index of active neurons.
@@ -325,31 +326,6 @@ class KTAlgorithm:
             return (
                 True if degree[degree == 2].size == pow(self._board_size, 2) else False
             )
-
-        def _dfs_through_neurons(self, neuron, active_neurons):
-            # removes the neuron from the active neurons list.
-            active_neurons = np.setdiff1d(active_neurons, [neuron])
-            # first finds the neighbours of this neuron and then finds which of them are active.
-            active_neighbours = np.intersect1d(
-                active_neurons, list(self._neuron.neighbours[neuron])
-            )
-            # if there was no active neighbours for this neuron, the hamiltonian graph has been
-            # fully visited.
-            if len(active_neighbours) == 0:
-                # we check if all the active neurons have been visited. if not, it means that there
-                # are more than 1 hamiltonian graph and it's not a knight's tour.
-                return True if len(active_neurons) == 0 else False
-
-            return self._dfs_through_neurons(active_neighbours[0], active_neurons)
-
-        def _check_connected_components(self):
-            # gets the index of active neurons.
-            active_neuron_indices = np.argwhere(self._neuron.outputs == 1).ravel()
-            # dfs through all active neurons starting from the first element.
-            connected = self._dfs_through_neurons(
-                active_neuron_indices[0], active_neuron_indices
-            )
-            return True if connected else False
 
         def _get_solution(self, col, row) -> list:
             visited = []
@@ -405,8 +381,12 @@ class KTAlgorithm:
             # each active neuron is configured so that it reaches a “stable” state
             # if and only if it has exactly two neighboring neurons that are also active
             # so why 4, the paper shows 2 instead. [lst97]
-            bias = 4 - sum_of_neighbours - self._neuron.outputs
-            next_state = self._neuron.states + bias
+            bias = 2
+            next_state = (
+                self._neuron.states
+                + (bias - sum_of_neighbours)
+                + (bias - self._neuron.outputs)
+            )
             number_of_changes = np.count_nonzero(next_state != self._neuron.states)
             self._neuron.outputs[np.argwhere(next_state > 3).ravel()] = 1
             self._neuron.outputs[np.argwhere(next_state < 0).ravel()] = 0
